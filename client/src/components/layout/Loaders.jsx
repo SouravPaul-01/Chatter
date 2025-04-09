@@ -1,4 +1,4 @@
-import { Skeleton, Grid, Box, Avatar } from "@mui/material";
+import { Skeleton, Grid, Box } from "@mui/material";
 
 export const LayoutLoader = () => {
   return (
@@ -11,121 +11,140 @@ export const LayoutLoader = () => {
       }}
     >
       {/* Header Skeleton */}
-      <Skeleton variant="rectangular" height={64} width="100%" />
+      <Box
+        sx={{
+          height: 64,
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          px: 2,
+          bgcolor: "#e57373", // Match your app's header color if needed
+        }}
+      >
+        {/* Left: App Title Skeleton */}
+        <Skeleton variant="text" width={100} height={30} />
 
-      <Grid container sx={{ flexGrow: 1, width: "100%" }}>
-        {/* Sidebar Skeleton - User List */}
-        <Grid
-          item
-          sm={4}
-          md={3}
-          sx={{
-            display: { xs: "none", sm: "block" },
-            bgcolor: "#f0f0f0",
-            p: 2,
-            height: "100%",
-          }}
-        >
-          {[...Array(10)].map((_, index) => (
-            <Box
-              key={index}
-              sx={{ display: "flex", alignItems: "center", mb: 2 }}
-            >
+        {/* Right: Icon Skeletons */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          {[...Array(5)].map((_, index) => (
+            <Skeleton key={index} variant="circular" width={30} height={30} />
+          ))}
+        </Box>
+      </Box>
+
+      {/* Main content area */}
+      <Box sx={{ flexGrow: 1, overflow: "hidden" }}>
+        <Grid container sx={{ height: "100%" }}>
+          {/* Sidebar Skeleton - User List */}
+          <Grid
+            item
+            size={{ sm: 4, md: 3 }}
+            sx={{
+              display: { xs: "none", sm: "block" },
+              bgcolor: "#f0f0f0",
+              p: 2,
+              height: "100%",
+            }}
+          >
+            {[...Array(10)].map((_, index) => (
+              <Box
+                key={index}
+                sx={{ display: "flex", alignItems: "center", mb: 2 }}
+              >
+                <Skeleton
+                  variant="circular"
+                  width={40}
+                  height={40}
+                  sx={{ mr: 2 }}
+                />
+                <Box sx={{ width: "100%" }}>
+                  <Skeleton variant="text" width="80%" height={20} />
+                  <Skeleton variant="text" width="60%" height={15} />
+                </Box>
+              </Box>
+            ))}
+          </Grid>
+
+          {/* Chat Window Skeleton - Message History */}
+          <Grid
+            item
+            size={{ xs: 12, sm: 8, md: 5, lg: 6 }}
+            sx={{
+              p: 2,
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
+              overflowY: "auto",
+            }}
+          >
+            {[...Array(12)].map((_, index) => (
+              <Box
+                key={index}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  mb: 2,
+                  flexDirection: index % 2 === 0 ? "row" : "row-reverse",
+                }}
+              >
+                <Skeleton
+                  variant="circular"
+                  width={40}
+                  height={40}
+                  sx={{ mx: 2 }}
+                />
+                <Skeleton
+                  variant="rectangular"
+                  height={50}
+                  width={index % 2 === 0 ? "70%" : "50%"}
+                  sx={{ borderRadius: 2 }}
+                />
+              </Box>
+            ))}
+          </Grid>
+
+          {/* Right Sidebar Skeleton - User Details & Notifications */}
+          <Grid
+            item
+            size={{ md: 4, lg: 3 }}
+            sx={{
+              display: { xs: "none", md: "block" },
+              p: 2,
+              bgcolor: "#f0f0f0",
+              height: "100%",
+            }}
+          >
+            {/* User Details */}
+            <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
               <Skeleton
                 variant="circular"
-                width={40}
-                height={40}
+                width={50}
+                height={50}
                 sx={{ mr: 2 }}
               />
-              <Box sx={{ width: "100%" }}>
-                <Skeleton variant="text" width="80%" height={20} />
-                <Skeleton variant="text" width="60%" height={15} />
+              <Box>
+                <Skeleton variant="text" width={100} height={20} />
+                <Skeleton variant="text" width={150} height={15} />
               </Box>
             </Box>
-          ))}
-        </Grid>
 
-        {/* Chat Window Skeleton - Message History */}
-        <Grid
-          item
-          xs={12}
-          sm={8}
-          md={6}
-          lg={6}
-          sx={{
-            p: 2,
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-          }}
-        >
-          {[...Array(12)].map((_, index) => (
-            <Box
-              key={index}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                mb: 2,
-                flexDirection: index % 2 === 0 ? "row" : "row-reverse",
-              }}
-            >
+            {/* Notifications */}
+            {[...Array(5)].map((_, index) => (
               <Skeleton
-                variant="circular"
-                width={40}
-                height={40}
-                sx={{ mx: 2 }}
-              />
-              <Skeleton
+                key={index}
                 variant="rectangular"
-                height={50}
-                width={index % 2 === 0 ? "70%" : "50%"}
-                sx={{ borderRadius: 2 }}
+                height={60}
+                width="100%"
+                sx={{ mb: 2, borderRadius: 1 }}
               />
-            </Box>
-          ))}
+            ))}
+          </Grid>
         </Grid>
-
-        {/* Right Sidebar Skeleton - User Details & Notifications */}
-        <Grid
-          item
-          md={3}
-          lg={3}
-          sx={{
-            display: { xs: "none", md: "block" },
-            p: 2,
-            bgcolor: "#f0f0f0",
-            height: "100%",
-          }}
-        >
-          {/* User Details */}
-          <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-            <Skeleton
-              variant="circular"
-              width={50}
-              height={50}
-              sx={{ mr: 2 }}
-            />
-            <Box>
-              <Skeleton variant="text" width={100} height={20} />
-              <Skeleton variant="text" width={150} height={15} />
-            </Box>
-          </Box>
-
-          {/* Notifications */}
-          {[...Array(5)].map((_, index) => (
-            <Skeleton
-              key={index}
-              variant="rectangular"
-              height={60}
-              width="100%"
-              sx={{ mb: 2, borderRadius: 1 }}
-            />
-          ))}
-        </Grid>
-      </Grid>
+      </Box>
 
       {/* Chat Input Skeleton */}
-      <Box
+      {/* <Box
         sx={{
           p: 2,
           bgcolor: "white",
@@ -133,6 +152,7 @@ export const LayoutLoader = () => {
           display: "flex",
           alignItems: "center",
           width: "100%",
+          flexShrink: 0,
         }}
       >
         <Skeleton variant="circular" width={40} height={40} sx={{ mr: 2 }} />
@@ -143,7 +163,7 @@ export const LayoutLoader = () => {
           sx={{ borderRadius: 2 }}
         />
         <Skeleton variant="circular" width={40} height={40} sx={{ ml: 2 }} />
-      </Box>
+      </Box> */}
     </Box>
   );
 };
