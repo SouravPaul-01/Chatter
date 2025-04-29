@@ -20,3 +20,18 @@ export const sampleChats = [
     members: ["1", "2"],
   },
 ];
+
+export const sampleUsers = [
+  {
+    avatar:
+      "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=250&d=mp",
+    name: "john Doe",
+    _id: "1",
+  },
+  {
+    avatar:
+      "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=250&d=mp",
+    name: "john Boi",
+    _id: "2",
+  },
+];
