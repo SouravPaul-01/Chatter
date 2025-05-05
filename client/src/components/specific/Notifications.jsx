@@ -49,7 +49,7 @@ const NotificationItem = memo(({ sender, _id, handler }) => {
         alignItems={"center"}
         width={"100%"}
       >
-        <Avatar src={avatar} />
+        <Avatar />
         <Typography
           variant="body1"
           sx={{

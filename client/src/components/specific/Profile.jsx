@@ -11,9 +11,6 @@ const Profile = () => {
   return (
     <Stack spacing={"2rem"} direction={"column"} alignItems={"center"}>
       <Avatar
-        src={
-          "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=250&d=mp"
-        }
         sx={{
           width: "8rem",
           height: "8rem",

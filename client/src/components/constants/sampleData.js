@@ -56,17 +56,28 @@ export const sampleNotifications = [
 
 export const sampleMessages = [
   {
-    attachments: [
-      {
-        public_id: "id1",
-        url: "https://res.cloudinary.com/dq0m9kx4r/image/upload/v1650000000/ChatApp/attachments/attachments/attachment_1.png",
-      },
-    ],
+    attachments: [],
     content: "Hello",
     _id: "1",
     sender: {
       _id: "user._id",
       name: "chaman",
+    },
+    chat: "chatId",
+    createdAt: "2022-05-01T00:00:00.000Z",
+  },
+  {
+    attachments: [
+      {
+        public_id: "id12",
+        url: "https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png",
+      },
+    ],
+    content: "",
+    _id: "2",
+    sender: {
+      _id: "kdfjdkfjd",
+      name: "chaman 2",
     },
     chat: "chatId",
     createdAt: "2022-05-01T00:00:00.000Z",
