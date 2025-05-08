@@ -1,4 +1,4 @@
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import {
   Avatar,
   Button,
@@ -8,12 +8,12 @@ import {
   Stack,
   TextField,
   Typography,
-  autocompleteClasses,
 } from "@mui/material";
 import { CameraAlt as CameraAltIcon } from "@mui/icons-material";
 import { VisuallyHiddenInput } from "../components/styles/StyledComponents";
 import { useFileHandler, useInputValidation, useStrongPassword } from "6pp";
 import { usernameValidator } from "../utils/validators";
+import { loginBgColorGradient } from "../components/constants/color";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -36,7 +36,7 @@ const Login = () => {
   return (
     <div
       style={{
-        backgroundImage: "linear-gradient(to right, #74ebd5, #acb6e5)",
+        backgroundImage: loginBgColorGradient,
         minHeight: "100vh",
       }}
       /*
