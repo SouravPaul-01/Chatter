@@ -31,7 +31,7 @@ const login = TryCatch(async (req, res, next) => {
   }
   const isMatch = await compare(password, user.password);
   if (!isMatch) {
-    return next(new ErrorHandler("Invalid Password", 404));
+    return next(new ErrorHandler("Invalid Password", 400));
   }
   sendToken(res, user, 200, `Logged In Successfully, Welcome ${user.name}`);
 });
