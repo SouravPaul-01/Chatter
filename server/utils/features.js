@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 
-const cookieOption = {
-  maxAge: 30 * 24 * 60 * 60 * 1000,
+const cookieOptions = {
+  maxAge: 15 * 24 * 60 * 60 * 1000,
   sameSite: "none",
   httpOnly: true,
   secure: true,
@@ -19,16 +19,27 @@ const connectDB = (uri) => {
 };
 
 const sendToken = (res, user, statusCode, message) => {
-  const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
-  });
+  const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
   return res
     .status(statusCode)
-    .cookie("Chatter-token", token, cookieOption)
+    .cookie("Chatter-token", token, cookieOptions)
     .json({
       success: true,
       message,
     });
 };
+const emitEvent = (req, event, users, data) => {
+  // users.forEach((user) => {
+  //   req.io.to(user.socketId).emit(event, data);
+  // });
+  console.log("Emit event:", event);
+};
+const deleteFilesFromCloudinary = async (public_ids) => {};
 
-export { connectDB, sendToken };
+export {
+  connectDB,
+  sendToken,
+  cookieOptions,
+  emitEvent,
+  deleteFilesFromCloudinary,
+};
