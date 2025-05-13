@@ -17,6 +17,9 @@ dotenv.config({
 
 const mongoURI = process.env.MONGO_URI;
 const port = process.env.PORT || 3000;
+const envMode = process.env.NODE_ENV.trim() || "PRODUCTION";
+
+const adminSecretKey = process.env.ADMIN_SECRET_KEY || "ADMIN_SECRET_KEY";
 
 connectDB(mongoURI);
 
@@ -43,5 +46,7 @@ app.get("/", (req, res) => {
 // error middleware
 app.use(errorMiddleware);
 app.listen(port, () => {
-  console.log(`server is running on port ${port}`);
+  console.log(`server is running on port ${port} in ${envMode} MODE`);
 });
+
+export { envMode, adminSecretKey };

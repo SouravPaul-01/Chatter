@@ -1,19 +1,35 @@
 import express from "express";
+import {
+  adminLogin,
+  adminLogout,
+  allChats,
+  allMessages,
+  allUsers,
+  getAdminData,
+  getDashboardStats,
+} from "../controllers/admin.js";
+import { adminLoginValidator, validateHandler } from "../lib/validators.js";
+import { adminOnly } from "../middlewares/auth.js";
 
 const app = express.Router();
 
-// app.get("/");
+// Anyone can access
+app.post("/verify", adminLoginValidator(), validateHandler, adminLogin);
 
-// app.post("/verify");
+app.get("/logout", adminLogout);
 
-// app.get("/logout");
+// Only admin can access
 
-// app.get("/users");
+app.use(adminOnly);
 
-// app.get("/chats");
+app.get("/", getAdminData);
 
-// app.get("/messages");
+app.get("/users", allUsers);
 
-// app.get("/stats");
+app.get("/chats", allChats);
+
+app.get("/messages", allMessages);
+
+app.get("/stats", getDashboardStats);
 
 export default app;

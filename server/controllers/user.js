@@ -8,9 +8,10 @@ import { Request } from "../models/request.js";
 import { NEW_REQUEST, REFETCH_CHATS } from "../constants/event.js";
 import { getOtherMember } from "../lib/helper.js";
 
-const newUser = async (req, res, next) => {
+const newUser = TryCatch(async (req, res, next) => {
   const { name, username, password, bio } = req.body;
-  console.log(req.body);
+  const file = req.file;
+  if (!file) return next(new ErrorHandler("Please upload an avatar", 400));
   const avatar = {
     public_id: "id12",
     url: "https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png",
@@ -23,7 +24,7 @@ const newUser = async (req, res, next) => {
     avatar,
   });
   sendToken(res, user, 201, "User created successfully");
-};
+});
 
 // login user and send token in cookie
 const login = TryCatch(async (req, res, next) => {
