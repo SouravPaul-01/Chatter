@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
 import Table from "../../components/shared/Table";
 import { Avatar, Stack } from "@mui/material";
-import { dashboardData } from "../../components/constants/sampleData";
+import { dashboardData } from "../../constants/sampleData";
 import { transformImage } from "../../components/lib/features";
 import AvatarCard from "../../components/shared/AvatarCard";
 

@@ -18,7 +18,7 @@ import {
   orange,
   Rose,
   Royal_Purple,
-} from "../constants/color";
+} from "../../constants/color";
 
 ChartJS.register(
   CategoryScale,

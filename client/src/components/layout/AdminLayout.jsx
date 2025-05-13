@@ -18,7 +18,7 @@ import {
   ExitToApp as ExitToAppIcon,
 } from "@mui/icons-material";
 import { useLocation, Link as LinkComponent, Navigate } from "react-router-dom";
-import { bgAdminColorGradient } from "../constants/color";
+import { bgAdminColorGradient } from "../../constants/color";
 
 const Link = styled(LinkComponent)`
   text-decoration: none;

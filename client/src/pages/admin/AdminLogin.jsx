@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useInputValidation } from "6pp";
-import { loginBgColorGradient } from "../../components/constants/color";
+import { loginBgColorGradient } from "../../constants/color";
 import { Navigate } from "react-router-dom";
 
 const isAdmin = true;

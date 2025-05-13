@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
 import Table from "../../components/shared/Table";
-import { dashboardData } from "../../components/constants/sampleData";
+import { dashboardData } from "../../constants/sampleData";
 import { fileFormat, transformImage } from "../../components/lib/features";
 import moment from "moment";
 import { Avatar, Box, Stack } from "@mui/material";

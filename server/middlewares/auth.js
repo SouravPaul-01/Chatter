@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { ErrorHandler } from "../utils/utility.js";
 import { adminSecretKey } from "../app.js";
+import { TryCatch } from "./error.js";
 
 const isAuthenticated = (req, res, next) => {
   const token = req.cookies["Chatter-token"];
@@ -13,7 +14,7 @@ const isAuthenticated = (req, res, next) => {
   next();
 };
 
-const adminOnly = (req, res, next) => {
+const adminOnly = TryCatch((req, res, next) => {
   const token = req.cookies["Chatter-admin-token"];
   if (!token) {
     return next(
@@ -30,6 +31,6 @@ const adminOnly = (req, res, next) => {
     }
   }
   next();
-};
+});
 
 export { isAuthenticated, adminOnly };

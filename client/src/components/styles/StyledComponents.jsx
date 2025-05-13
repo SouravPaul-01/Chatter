@@ -1,6 +1,6 @@
 import { styled } from "@mui/material";
 import { Link as LinkComponent } from "react-router-dom";
-import { gray } from "../constants/color";
+import { gray } from "../../constants/color";
 
 export const VisuallyHiddenInput = styled("input")({
   border: 0,
