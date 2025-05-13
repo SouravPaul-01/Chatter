@@ -3,6 +3,7 @@
     "acceptrequest",
     "addmembers",
     "eixists",
+    "Miliseconds",
     "removemember",
     "sendrequest"
   ]
