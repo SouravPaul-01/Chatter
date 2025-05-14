@@ -1,6 +1,11 @@
 import { compare } from "bcrypt";
 import { User } from "../models/user.js";
-import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
+import {
+  cookieOptions,
+  emitEvent,
+  sendToken,
+  uploadFilesToCloudinary,
+} from "../utils/features.js";
 import { TryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
 import { Chat } from "../models/chat.js";
@@ -8,14 +13,41 @@ import { Request } from "../models/request.js";
 import { NEW_REQUEST, REFETCH_CHATS } from "../constants/event.js";
 import { getOtherMember } from "../lib/helper.js";
 
+// const newUser = TryCatch(async (req, res, next) => {
+//   const { name, username, password, bio } = req.body;
+//   const file = req.file;
+//   if (!file) return next(new ErrorHandler("Please upload an avatar", 400));
+//   const result = await uploadFilesToCloudinary([file]);
+//   const avatar = {
+//     public_id: result[0].public_id,
+//     url: result[0].url,
+//   };
+//   const user = await User.create({
+//     name,
+//     bio,
+//     username,
+//     password,
+//     avatar,
+//   });
+//   sendToken(res, user, 201, "User created successfully");
+// });
+
+// login user and send token in cookie
+
 const newUser = TryCatch(async (req, res, next) => {
   const { name, username, password, bio } = req.body;
+
   const file = req.file;
-  if (!file) return next(new ErrorHandler("Please upload an avatar", 400));
+
+  if (!file) return next(new ErrorHandler("Please Upload Avatar"));
+
+  const result = await uploadFilesToCloudinary([file]);
+
   const avatar = {
-    public_id: "id12",
-    url: "https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png",
+    public_id: result[0].public_id,
+    url: result[0].url,
   };
+
   const user = await User.create({
     name,
     bio,
@@ -23,10 +55,10 @@ const newUser = TryCatch(async (req, res, next) => {
     password,
     avatar,
   });
-  sendToken(res, user, 201, "User created successfully");
+
+  sendToken(res, user, 201, "User created");
 });
 
-// login user and send token in cookie
 const login = TryCatch(async (req, res, next) => {
   const { username, password } = req.body;
 

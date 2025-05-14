@@ -7,6 +7,7 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import { v4 as uuid } from "uuid";
 import cors from "cors";
+import { v2 as cloudinary } from "cloudinary";
 
 import userRoute from "./routes/user.js";
 import chatRoute from "./routes/chat.js";
@@ -29,6 +30,12 @@ const adminSecretKey = process.env.ADMIN_SECRET_KEY || "ADMIN_SECRET_KEY";
 const userSocketIDs = new Map();
 
 connectDB(mongoURI);
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // create fake user
 // createUser(10);
