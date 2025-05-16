@@ -22,7 +22,11 @@ const fileFormat = (url = "") => {
   }
   return "file";
 };
-const transformImage = (url = "", width = 100) => url;
+const transformImage = (url = "", width = 100) => {
+  const newUrl = url.replace("upload/", `upload/dpr_auto/w_${width}/`);
+
+  return newUrl;
+};
 
 //? Added to get last 7 days data of chart for admin dashboard.
 const getLast7Days = () => {
