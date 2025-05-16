@@ -69,37 +69,31 @@ const FileMenu = ({ anchorEl, chatId }) => {
 
     if (files.length <= 0) return;
 
-    if (files.length > 10)
+    if (files.length > 5)
       return toast.error(`You can only send 5 ${key} at a time`);
 
-    dispatch(setUploadingLoader(true));
+    // Validate file sizes
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    const invalidFiles = files.filter(file => file.size > maxSize);
+    if (invalidFiles.length > 0) {
+      return toast.error(`Some files exceed the 5MB size limit`);
+    }
 
+    dispatch(setUploadingLoader(true));
     const toastId = toast.loading(`Sending ${key}...`);
     closeFileMenu();
 
     try {
       const myForm = new FormData();
-
       myForm.append("chatId", chatId);
       files.forEach((file) => myForm.append("files", file));
 
-      //   const res = await sendAttachments(myForm);
-
-      //   if (res.data) toast.success(`${key} sent successfully`, { id: toastId });
-      //   else toast.error(`Failed to send ${key}`, { id: toastId });
-
-      //   // Fetching Here
-      // } catch (error) {
-      //   toast.error(error, { id: toastId });
-
-      // FIX: unwrap to properly handle success/failure
       const response = await sendAttachments(myForm).unwrap();
-
       toast.success(`${key} sent successfully`, { id: toastId });
       console.log("Upload response:", response);
     } catch (error) {
       console.error("Upload failed:", error);
-      toast.error(`Failed to send ${key}`, { id: toastId });
+      toast.error(error?.data?.message || `Failed to send ${key}`, { id: toastId });
     } finally {
       dispatch(setUploadingLoader(false));
     }

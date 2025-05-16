@@ -89,8 +89,16 @@ const emitEvent = (req, event, users, data) => {
 //   });
 
 const uploadFilesToCloudinary = async (files = []) => {
+  if (!files || files.length === 0) {
+    throw new Error("No files provided for upload");
+  }
+
   const uploadPromises = files.map((file) => {
     return new Promise((resolve, reject) => {
+      if (!file.buffer) {
+        return reject(new Error("Invalid file format"));
+      }
+
       cloudinary.uploader.upload(
         getBase64(file),
         {
@@ -98,22 +106,26 @@ const uploadFilesToCloudinary = async (files = []) => {
           public_id: uuid(),
         },
         (error, result) => {
-          if (error) return reject(error);
+          if (error) {
+            console.error("Cloudinary upload error:", error);
+            return reject(new Error(`Failed to upload file: ${error.message}`));
+          }
           resolve(result);
         }
       );
     });
   });
+
   try {
     const results = await Promise.all(uploadPromises);
-
     const formattedResults = results.map((result) => ({
       public_id: result.public_id,
       url: result.secure_url,
     }));
     return formattedResults;
   } catch (err) {
-    throw new Error("Error uploading files to cloudinary", err);
+    console.error("Error in uploadFilesToCloudinary:", err);
+    throw new Error(`Failed to upload files: ${err.message}`);
   }
 };
 

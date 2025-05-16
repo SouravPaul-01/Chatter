@@ -306,40 +306,42 @@ const sendAttachments = TryCatch(async (req, res, next) => {
 
   if (!chat) return next(new ErrorHandler("Chat not found", 404));
 
-  if (files.length < 1)
-    return next(new ErrorHandler("Please provide attachments", 400));
+  try {
+    //   Upload files here
+    const attachments = await uploadFilesToCloudinary(files);
 
-  //   Upload files here
-  const attachments = await uploadFilesToCloudinary(files);
+    const messageForDB = {
+      content: "",
+      attachments,
+      sender: me._id,
+      chat: chatId,
+    };
 
-  const messageForDB = {
-    content: "",
-    attachments,
-    sender: me._id,
-    chat: chatId,
-  };
+    const messageForRealTime = {
+      ...messageForDB,
+      sender: {
+        _id: me._id,
+        name: me.name,
+      },
+    };
 
-  const messageForRealTime = {
-    ...messageForDB,
-    sender: {
-      _id: me._id,
-      name: me.name,
-    },
-  };
+    const message = await Message.create(messageForDB);
 
-  const message = await Message.create(messageForDB);
+    emitEvent(req, NEW_ATTACHMENT, chat.members, {
+      message: messageForRealTime,
+      chatId,
+    });
 
-  emitEvent(req, NEW_MESSAGE, chat.members, {
-    message: messageForRealTime,
-    chatId,
-  });
+    emitEvent(req, NEW_MESSAGE_ALERT, chat.members, { chatId });
 
-  emitEvent(req, NEW_MESSAGE_ALERT, chat.members, { chatId });
-
-  return res.status(200).json({
-    success: true,
-    message,
-  });
+    return res.status(200).json({
+      success: true,
+      message,
+    });
+  } catch (error) {
+    console.error("Error in sendAttachments:", error);
+    return next(new ErrorHandler(error.message || "Failed to upload attachments", 500));
+  }
 });
 const getChatDetails = TryCatch(async (req, res, next) => {
   if (req.query.populate === "true") {

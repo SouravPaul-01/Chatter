@@ -74,7 +74,9 @@ export const api = createApi({
         method: "POST",
         credentials: "include",
         body: data,
+        formData: true,
       }),
+      invalidatesTags: ["Message"],
     }),
   }),
 });
