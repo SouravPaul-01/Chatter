@@ -71,6 +71,23 @@ const emitEvent = (req, event, users, data) => {
 //   }
 // };
 
+// const uploadFilesToCloudinary = async (files = []) => {
+//   const uploadPromises = files.map((file) => {
+//     return new Promise((resolve, reject) => {
+//       cloudinary.uploader.upload(
+//         getBase64(file),
+//         {
+//           resource_type: "auto",
+//           public_id: uuid(),
+//         },
+//         (error, result) => {
+//           if (error) return reject(error);
+//           resolve(result);
+//         }
+//       );
+//     });
+//   });
+
 const uploadFilesToCloudinary = async (files = []) => {
   const uploadPromises = files.map((file) => {
     return new Promise((resolve, reject) => {
@@ -87,7 +104,6 @@ const uploadFilesToCloudinary = async (files = []) => {
       );
     });
   });
-
   try {
     const results = await Promise.all(uploadPromises);
 
