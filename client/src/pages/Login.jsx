@@ -105,6 +105,8 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    const toastId = toast.loading("Logging in...");
+
     const config = {
       withCredentials: true,
       headers: {
@@ -120,10 +122,14 @@ const Login = () => {
         },
         config
       );
-      dispatch(userExists(true));
-      toast.success(data.message);
+      dispatch(userExists(data.user));
+      toast.success(data.message, {
+        id: toastId,
+      });
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong");
+      toast.error(error?.response?.data?.message || "Something went wrong", {
+        id: toastId,
+      });
     }
   };
   return (

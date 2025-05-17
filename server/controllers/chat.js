@@ -8,7 +8,7 @@ import {
 } from "../utils/features.js";
 import {
   ALERT,
-  NEW_ATTACHMENT,
+  NEW_MESSAGE,
   NEW_MESSAGE_ALERT,
   REFETCH_CHATS,
 } from "../constants/event.js";
@@ -306,43 +306,42 @@ const sendAttachments = TryCatch(async (req, res, next) => {
 
   if (!chat) return next(new ErrorHandler("Chat not found", 404));
 
-  try {
-    //   Upload files here
-    const attachments = await uploadFilesToCloudinary(files);
+  if (files.length < 1)
+    return next(new ErrorHandler("Please provide attachments", 400));
 
-    const messageForDB = {
-      content: "",
-      attachments,
-      sender: me._id,
-      chat: chatId,
-    };
+  //   Upload files here
+  const attachments = await uploadFilesToCloudinary(files);
 
-    const messageForRealTime = {
-      ...messageForDB,
-      sender: {
-        _id: me._id,
-        name: me.name,
-      },
-    };
+  const messageForDB = {
+    content: "",
+    attachments,
+    sender: me._id,
+    chat: chatId,
+  };
 
-    const message = await Message.create(messageForDB);
+  const messageForRealTime = {
+    ...messageForDB,
+    sender: {
+      _id: me._id,
+      name: me.name,
+    },
+  };
 
-    emitEvent(req, NEW_ATTACHMENT, chat.members, {
-      message: messageForRealTime,
-      chatId,
-    });
+  const message = await Message.create(messageForDB);
 
-    emitEvent(req, NEW_MESSAGE_ALERT, chat.members, { chatId });
+  emitEvent(req, NEW_MESSAGE, chat.members, {
+    message: messageForRealTime,
+    chatId,
+  });
 
-    return res.status(200).json({
-      success: true,
-      message,
-    });
-  } catch (error) {
-    console.error("Error in sendAttachments:", error);
-    return next(new ErrorHandler(error.message || "Failed to upload attachments", 500));
-  }
+  emitEvent(req, NEW_MESSAGE_ALERT, chat.members, { chatId });
+
+  return res.status(200).json({
+    success: true,
+    message,
+  });
 });
+
 const getChatDetails = TryCatch(async (req, res, next) => {
   if (req.query.populate === "true") {
     const chat = await Chat.findById(req.params.id)

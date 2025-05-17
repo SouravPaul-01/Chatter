@@ -70,7 +70,7 @@ const login = TryCatch(async (req, res, next) => {
   if (!isMatch) {
     return next(new ErrorHandler("Invalid Password", 400));
   }
-  sendToken(res, user, 200, `Logged In Successfully, Welcome ${user.name}`);
+  sendToken(res, user, 200, `Logged In Successfully, Welcome ${user.name}`, user);
 });
 // get my profile
 const getMyProfile = TryCatch(async (req, res, next) => {

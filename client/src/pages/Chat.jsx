@@ -66,9 +66,22 @@ const Chat = ({ chatId, user }) => {
     setMessage("");
   };
 
-  const newMessagesHandler = useCallback((data) => {
-    setMessages((prev) => [...prev, data.message]);
-  }, []);
+  useEffect(() => {
+    return () => {
+      setMessages([]);
+      setMessage("");
+      setOldMessages([]);
+      setPage(1);
+    };
+  }, [chatId]);
+
+  const newMessagesHandler = useCallback(
+    (data) => {
+      if (data.chatId !== chatId) return;
+      setMessages((prev) => [...prev, data.message]);
+    },
+    [chatId]
+  );
   const eventHandler = { [NEW_MESSAGE]: newMessagesHandler };
 
   useSocketEvents(socket, eventHandler);

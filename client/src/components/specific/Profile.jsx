@@ -9,10 +9,12 @@ import moment from "moment";
 import { transformImage } from "../lib/features";
 
 const Profile = ({ user }) => {
+  if (!user) return null;
+
   return (
     <Stack spacing={"2rem"} direction={"column"} alignItems={"center"}>
       <Avatar
-        src={transformImage(user.avatar.url)}
+        src={transformImage(user.avatar?.url)}
         sx={{
           width: "8rem",
           height: "8rem",
@@ -21,7 +23,7 @@ const Profile = ({ user }) => {
           border: "5px solid black",
         }}
       />
-      <ProfileCard heading={"Bio"} text={user.bio} />
+      {user.bio && <ProfileCard heading={"Bio"} text={user.bio} />}
       <ProfileCard
         heading={"User Name"}
         text={user.username}
@@ -36,6 +38,7 @@ const Profile = ({ user }) => {
     </Stack>
   );
 };
+
 const ProfileCard = ({ text, Icon, heading }) => (
   <Stack
     direction={"row"}
