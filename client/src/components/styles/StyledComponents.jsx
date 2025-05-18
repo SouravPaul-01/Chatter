@@ -71,7 +71,7 @@ const pulseAnimation = keyframes`
   }
 `;
 
-export const BouncingSkeleton = styled(Skeleton)(({ theme }) => ({
+export const BouncingSkeleton = styled(Skeleton)(() => ({
   animation: `${pulseAnimation} 1.4s ease-in-out infinite`,
   borderRadius: "50%",
   backgroundColor: "rgba(38, 148, 171, 0.7)",
