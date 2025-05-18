@@ -1,6 +1,7 @@
-import { Skeleton, Grid, Box } from "@mui/material";
+import { Skeleton, Grid, Box, Stack } from "@mui/material";
+import { BouncingSkeleton } from "../styles/StyledComponents";
 
-export const LayoutLoader = () => {
+const LayoutLoader = () => {
   return (
     <Box
       sx={{
@@ -167,3 +168,70 @@ export const LayoutLoader = () => {
     </Box>
   );
 };
+
+const TypingLoader = () => {
+  return (
+    <Stack
+      spacing={1.5}
+      direction="row"
+      padding="0.8rem 1.2rem"
+      alignItems="center"
+      sx={{
+        backgroundColor: 'rgba(38, 148, 171, 0.08)',
+        borderRadius: '1.5rem 1.5rem 1.5rem 0.25rem',
+        width: 'fit-content',
+        margin: '0.5rem 0',
+        marginLeft: '0.5rem',
+        boxShadow: 'none',
+        border: 'none',
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          bottom: 0,
+          left: '-0.5rem',
+          backgroundColor: 'rgba(38, 148, 171, 0.08)',
+          transform: 'rotate(45deg)',
+          transformOrigin: 'bottom right',
+          border: 'none'
+        }
+      }}
+    >
+      <BouncingSkeleton
+        variant="circular"
+        width={8}
+        height={8}
+        sx={{
+          animationDelay: '0ms',
+          position: 'relative',
+          zIndex: 1,
+          margin: 0
+        }}
+      />
+      <BouncingSkeleton
+        variant="circular"
+        width={8}
+        height={8}
+        sx={{
+          animationDelay: '200ms',
+          position: 'relative',
+          zIndex: 1,
+          margin: 0
+        }}
+      />
+      <BouncingSkeleton
+        variant="circular"
+        width={8}
+        height={8}
+        sx={{
+          animationDelay: '400ms',
+          position: 'relative',
+          zIndex: 1,
+          margin: 0
+        }}
+      />
+    </Stack>
+  );
+};
+
+export { LayoutLoader, TypingLoader };

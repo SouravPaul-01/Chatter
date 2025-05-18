@@ -1,4 +1,4 @@
-import { styled } from "@mui/material";
+import { Skeleton, keyframes, styled } from "@mui/material";
 import { Link as LinkComponent } from "react-router-dom";
 import { gray } from "../../constants/color";
 
@@ -58,3 +58,30 @@ export const CurveButton = styled("button")`
     background-color: #99b3d1;
   }
 `;
+
+const pulseAnimation = keyframes`
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+`;
+
+export const BouncingSkeleton = styled(Skeleton)(({ theme }) => ({
+  animation: `${pulseAnimation} 1.4s ease-in-out infinite`,
+  borderRadius: "50%",
+  backgroundColor: "rgba(38, 148, 171, 0.7)",
+  boxShadow: "none",
+  backdropFilter: "none",
+  margin: 0,
+  padding: 0,
+  minWidth: "unset",
+  minHeight: "unset",
+  "&:hover": {
+    boxShadow: "none",
+  },
+}));

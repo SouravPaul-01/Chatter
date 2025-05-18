@@ -8,7 +8,12 @@ import { createServer } from "http";
 import { v4 as uuid } from "uuid";
 import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
-import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/event.js";
+import {
+  NEW_MESSAGE,
+  NEW_MESSAGE_ALERT,
+  START_TYPING,
+  STOP_TYPING,
+} from "./constants/event.js";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/message.js";
 import { corsOptions } from "./constants/config.js";
@@ -78,8 +83,6 @@ io.on("connection", (socket) => {
   const user = socket.user;
   userSocketIDs.set(user._id.toString(), socket.id);
 
-  console.log(userSocketIDs);
-
   socket.on(NEW_MESSAGE, async ({ chatId, members, message }) => {
     const messageForRealTime = {
       content: message,
@@ -91,7 +94,6 @@ io.on("connection", (socket) => {
       chat: chatId,
       createdAt: new Date().toISOString(),
     };
-    console.log("new message:", messageForRealTime);
 
     const messageForDB = {
       content: message,
@@ -109,13 +111,20 @@ io.on("connection", (socket) => {
     try {
       await Message.create(messageForDB);
     } catch (err) {
-      console.log(err);
+      throw new Error(err);
     }
-
-    socket.on("disconnect", () => {
-      console.log("user disconnected");
-      userSocketIDs.delete(user._id.toString());
-    });
+  });
+  socket.on(START_TYPING, ({ members, chatId }) => {
+    const membersSockets = getSockets(members);
+    socket.to(membersSockets).emit(START_TYPING, { chatId });
+  });
+  socket.on(STOP_TYPING, ({ members, chatId }) => {
+    const membersSockets = getSockets(members);
+    socket.to(membersSockets).emit(STOP_TYPING, { chatId });
+  });
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+    userSocketIDs.delete(user._id.toString());
   });
 });
 

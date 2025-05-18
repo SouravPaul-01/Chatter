@@ -37,7 +37,9 @@ const ChatItem = ({
         <Stack>
           <Typography>{name}</Typography>
           {newMessageAlert && (
-            <Typography>{newMessageAlert.count} new Message</Typography>
+            <Typography style={{ fontSize: '0.8rem', color: 'gray' }}>
+              {newMessageAlert.count} {newMessageAlert.count === 1 ? 'new message' : 'new messages'}
+            </Typography>
           )}
         </Stack>
         {isOnline && (
