@@ -11,7 +11,7 @@ import {
 import { memo } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { useErrors } from "../../hooks/hook";
+import { useAsyncMutation, useErrors } from "../../hooks/hook";
 import {
   useAcceptFriendRequestMutation,
   useGetNotificationsQuery,
@@ -25,18 +25,14 @@ const Notifications = () => {
   const dispatch = useDispatch();
   const { isLoading, data, error, isError } = useGetNotificationsQuery();
 
-  const [acceptRequest] = useAcceptFriendRequestMutation();
+  const [acceptRequest] = useAsyncMutation(useAcceptFriendRequestMutation);
   const friendRequestHandler = async ({ _id, accept }) => {
     dispatch(setIsNotification(false));
-    try {
-      const res = await acceptRequest({ requestId: _id, accept });
-      if (res.data?.success) {
-        console.log("use Socket Here");
-      } else toast.error(res.data?.error || "Something went wrong");
-    } catch (e) {
-      toast.error("Something went wrong");
-      console.log(e);
-    }
+
+    await acceptRequest("Accepting friend request...", {
+      requestId: _id,
+      accept,
+    });
   };
 
   const closeHandler = () => dispatch(setIsNotification(false));

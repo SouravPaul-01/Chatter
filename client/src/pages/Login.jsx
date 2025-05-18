@@ -22,6 +22,7 @@ import toast from "react-hot-toast";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const toggleLogin = () => setIsLogin((prev) => !prev);
 
   const name = useInputValidation("");
@@ -67,7 +68,7 @@ const Login = () => {
     e.preventDefault();
 
     const toastId = toast.loading("Signing Up...");
-    // setIsLoading(true);
+    setIsLoading(true);
 
     const formData = new FormData();
     formData.append("avatar", avatar.file);
@@ -99,12 +100,12 @@ const Login = () => {
         id: toastId,
       });
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     const toastId = toast.loading("Logging in...");
 
     const config = {
@@ -130,6 +131,8 @@ const Login = () => {
       toast.error(error?.response?.data?.message || "Something went wrong", {
         id: toastId,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -209,6 +212,7 @@ const Login = () => {
                   variant="contained"
                   color="primary"
                   sx={{ marginTop: "1rem" }}
+                  disabled={isLoading}
                 >
                   Login
                 </Button>
@@ -218,6 +222,7 @@ const Login = () => {
 
                 <Button
                   fullWidth
+                  disabled={isLoading}
                   variant="text"
                   color="primary"
                   sx={{ marginTop: ".8rem" }}
@@ -329,6 +334,7 @@ const Login = () => {
                   variant="contained"
                   color="primary"
                   sx={{ marginTop: "1rem" }}
+                  disabled={isLoading}
                 >
                   Sing UP
                 </Button>
@@ -338,6 +344,7 @@ const Login = () => {
 
                 <Button
                   fullWidth
+                  disabled={isLoading}
                   variant="text"
                   color="primary"
                   sx={{ marginTop: ".8rem" }}

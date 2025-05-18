@@ -21,23 +21,14 @@ const connectDB = (uri) => {
     });
 };
 
-const sendToken = (res, user, statusCode, message) => {
+const sendToken = (res, user, code, message) => {
   const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
-  return res
-    .status(statusCode)
-    .cookie("Chatter-token", token, cookieOptions)
-    .json({
-      success: true,
-      message,
-      user: {
-        _id: user._id,
-        name: user.name,
-        username: user.username,
-        bio: user.bio,
-        avatar: user.avatar,
-        createdAt: user.createdAt,
-      },
-    });
+
+  return res.status(code).cookie("Chatter-token", token, cookieOptions).json({
+    success: true,
+    user,
+    message,
+  });
 };
 const emitEvent = (req, event, users, data) => {
   const io = req.app.get("io");
