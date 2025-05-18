@@ -26,12 +26,14 @@ import { setIsFileMenu } from "../redux/reducers/misc";
 import { removeNewMessagesAlert } from "../redux/reducers/chat";
 import { START_TYPING, STOP_TYPING } from "../../../server/constants/event";
 import { TypingLoader } from "../components/layout/Loaders";
+import { useNavigate } from "react-router-dom";
 
 const Chat = ({ chatId, user }) => {
   const socket = getSocket();
   const dispatch = useDispatch();
   const containerRef = useRef(null);
   const bottomRef = useRef(null);
+  const navigate = useNavigate();
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -116,6 +118,10 @@ const Chat = ({ chatId, user }) => {
       });
     }
   }, [messages, userTyping]);
+
+  useEffect(() => {
+    if (chatDetails.isError) return navigate("/");
+  }, [chatDetails.isError]);
 
   const newMessagesListener = useCallback(
     (data) => {
