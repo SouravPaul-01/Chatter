@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useFetchData } from "6pp";
+import { Avatar, Skeleton, Stack } from "@mui/material";
+import { useEffect, useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
-import Table from "../../components/shared/Table";
-import { Avatar, Stack } from "@mui/material";
-import { dashboardData } from "../../constants/sampleData";
 import { transformImage } from "../../components/lib/features";
 import AvatarCard from "../../components/shared/AvatarCard";
+import Table from "../../components/shared/Table";
+import { server } from "../../constants/config";
+import { useErrors } from "../../hooks/hook";
 
 const columns = [
   {
@@ -25,6 +27,12 @@ const columns = [
     headerName: "Name",
     headerClassName: "table-header",
     width: 300,
+  },
+  {
+    field: "groupChat",
+    headerName: "Group Chat",
+    headerClassName: "table-header",
+    width: 100,
   },
   {
     field: "totalMembers",
@@ -62,25 +70,43 @@ const columns = [
 ];
 
 const ChatManagement = () => {
+  const { loading, data, error } = useFetchData({
+    url: `${server}/api/v1/admin/chats`,
+    key: "dashboard-chats",
+    credentials: "include",
+  });
+
+  useErrors([
+    {
+      isError: error,
+      error: error,
+    },
+  ]);
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    setRows(
-      dashboardData.chats.map((chat) => ({
-        ...chat,
-        id: chat._id,
-        avatar: chat.avatar.map((chat) => transformImage(chat, 50)),
-        members: chat.members.map((chat) => transformImage(chat.avatar, 50)),
-        creator: {
-          name: chat.creator.name,
-          avatar: transformImage(chat.creator.avatar, 50),
-        },
-      }))
-    );
-  }, []);
+    if (data) {
+      setRows(
+        data.chats.map((chat) => ({
+          ...chat,
+          id: chat._id,
+          avatar: chat.avatar.map((chat) => transformImage(chat, 50)),
+          members: chat.members.map((chat) => transformImage(chat.avatar, 50)),
+          creator: {
+            name: chat.creator.name,
+            avatar: transformImage(chat.creator.avatar, 50),
+          },
+        }))
+      );
+    }
+  }, [data]);
   return (
     <AdminLayout>
-      <Table heading={"All Chats "} rows={rows} columns={columns} />
+      {loading ? (
+        <Skeleton height={"100vh"} />
+      ) : (
+        <Table heading={"All Chats "} rows={rows} columns={columns} />
+      )}
     </AdminLayout>
   );
 };

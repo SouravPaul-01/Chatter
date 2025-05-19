@@ -109,7 +109,8 @@ const AdminLayout = ({ children }) => {
         sx={{
           display: { xs: "none", md: "block" },
           height: "100%",
-          backgroundImage: bgAdminColorGradient,
+          // backgroundImage: bgAdminColorGradient,
+          borderRight: "1px solid rgba(0, 0, 0, 0.1)",
         }}
       >
         <Sidebar />

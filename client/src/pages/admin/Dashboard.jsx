@@ -91,7 +91,7 @@ const Dashboard = () => {
   return (
     <AdminLayout>
       {loading ? (
-        <LayoutLoader />
+        <Skeleton height={"100vh"} />
       ) : (
         <Container
           component={"main"}
@@ -121,7 +121,7 @@ const Dashboard = () => {
               }}
             >
               <Typography variant="h4" margin={"2rem 0"}>
-                Last Messages
+                Last 7 Days Messages
               </Typography>
               <LineChart value={stats?.messages || []} />
             </Paper>
