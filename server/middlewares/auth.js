@@ -16,24 +16,21 @@ const isAuthenticated = (req, res, next) => {
   next();
 };
 
-const adminOnly = TryCatch((req, res, next) => {
+const adminOnly = (req, res, next) => {
   const token = req.cookies["Chatter-admin-token"];
-  if (!token) {
-    return next(
-      new ErrorHandler(
-        "Login as 'Admin' through Admin authentication to access this route",
-        401
-      )
-    );
-    const secretKey = jwt.verify(token, process.env.JWT_SECRET);
 
-    const isMatched = secretKey === adminSecretKey;
-    if (!isMatched) {
-      return next(new ErrorHandler("Invalid Secret Key", 401));
-    }
-  }
+  if (!token)
+    return next(new ErrorHandler("Only Admin can access this route", 401));
+
+  const secretKey = jwt.verify(token, process.env.JWT_SECRET);
+
+  const isMatched = secretKey === adminSecretKey;
+
+  if (!isMatched)
+    return next(new ErrorHandler("Only Admin can access this route", 401));
+
   next();
-});
+};
 
 const socketAuthenticator = async (err, socket, next) => {
   try {

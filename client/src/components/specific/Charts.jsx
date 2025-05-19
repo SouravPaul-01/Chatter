@@ -42,6 +42,21 @@ const lineChatOptions = {
       display: false,
       text: "Chart.js Line Chart",
     },
+    tooltip: {
+      callbacks: {
+        label: function(context) {
+          const value = context.parsed.y;
+          let label = 'Message'+': '+value; // Default to singular
+
+          if (value > 1) {
+            label = 'Messages'; // Use plural if value is > 1
+            label += ': ' + value;
+          }
+
+          return label;
+        }
+      }
+    }
   },
   scales: {
     y: {
@@ -58,11 +73,15 @@ const lineChatOptions = {
   },
 };
 const LineChart = ({ value = [] }) => {
+  // Calculate the total number of messages
+  const totalMessages = value.reduce((sum, count) => sum + count, 0);
+
   const data = {
     labels,
     datasets: [
       {
-        label: "Revenue",
+        // Set the label based on the total number of messages
+        label: totalMessages <= 1 ? "Message" : "Messages",
         backgroundColor: "rgb(255, 99, 132,0.2)",
         borderColor: "rgb(255, 99, 132)",
         fill: true,

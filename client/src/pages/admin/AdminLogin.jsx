@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Avatar,
   Button,
@@ -12,15 +12,20 @@ import {
 import { useInputValidation } from "6pp";
 import { loginBgColorGradient } from "../../constants/color";
 import { Navigate } from "react-router-dom";
-
-const isAdmin = true;
+import { useDispatch, useSelector } from "react-redux";
+import { adminLogin, getAdmin } from "../../redux/thunks/admin";
 
 const AdminLogin = () => {
-  const secrectKey = useInputValidation("");
+  const { isAdmin } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const secretKey = useInputValidation("");
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log("submitHandler");
+    dispatch(adminLogin(secretKey.value));
   };
+  useEffect(() => {
+    dispatch(getAdmin());
+  }, [dispatch]);
 
   if (isAdmin) return <Navigate to="/admin/dashboard" />;
 
@@ -81,8 +86,8 @@ const AdminLogin = () => {
               type="Password"
               margin="normal"
               variant="outlined"
-              value={secrectKey.value}
-              onChange={secrectKey.changeHandler}
+              value={secretKey.value}
+              onChange={secretKey.changeHandler}
             />
             <Button
               type="submit"
