@@ -29,7 +29,7 @@ const ChatList = ({
         const newMessageAlert = newMessagesAlert.find(
           ({ chatId }) => String(chatId) === String(_id)
         );
-        const isOnline = members?.some((members) => onlineUsers.includes(_id));
+        const isOnline = members?.some((member) => onlineUsers.includes(member));
         return (
           <ChatItem
             index={index}
