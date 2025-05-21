@@ -192,7 +192,7 @@ const Chat = ({ chatId, user }) => {
         boxSizing={"border-box"}
         spacing={"1rem"}
         padding={"1rem"}
-        height={"90%"}
+        height={"calc(100vh - 8rem)"}
         bgcolor={gray}
         sx={{
           overflowY: "auto",
@@ -218,10 +218,12 @@ const Chat = ({ chatId, user }) => {
       </Stack>
       <form
         style={{
-          position: "absolute",
-          bottom: "0",
-          width: "50%",
+
           height: "3rem",
+          width: "100%",
+          padding: "0 1rem",
+          backgroundColor: "white",
+          borderTop: "1px solid #e0e0e0",
         }}
         onSubmit={submitHandler}
       >
@@ -258,7 +260,7 @@ const Chat = ({ chatId, user }) => {
               color: "white",
               padding: "0.5rem",
               marginLeft: "1rem",
-              transitionn: "all 0.5s ease-in-out",
+              transition: "all 0.5s ease-in-out",
               "&:hover": {
                 backgroundColor: "error.dark",
                 color: "white",

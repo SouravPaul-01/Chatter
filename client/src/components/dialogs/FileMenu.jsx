@@ -1,5 +1,5 @@
 import { ListItemText, Menu, MenuItem, MenuList, Tooltip } from "@mui/material";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsFileMenu, setUploadingLoader } from "../../redux/reducers/misc";
 import {
@@ -10,12 +10,14 @@ import {
   ColorLens as ColorLensIcon,
 } from "@mui/icons-material";
 import toast from "react-hot-toast";
-import { useSendAttachmentsMutation } from "../../redux/api/api";
+import { useSendAttachmentsMutation, useChatDetailsQuery } from "../../redux/api/api";
+import DrawingCanvas from "./DrawingCanvas";
+import { useErrors } from "../../hooks/hook";
 
 const FileMenu = ({ anchorEl, chatId }) => {
   const { isFileMenu } = useSelector((state) => state.misc);
-
   const dispatch = useDispatch();
+  const [isDrawingCanvasOpen, setIsDrawingCanvasOpen] = useState(false);
 
   const imageRef = useRef(null);
   const videoRef = useRef(null);
@@ -23,6 +25,9 @@ const FileMenu = ({ anchorEl, chatId }) => {
   const fileRef = useRef(null);
 
   const [sendAttachments] = useSendAttachmentsMutation();
+  const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
+
+  useErrors([{ isError: chatDetails.isError, error: chatDetails.error }]);
 
   const closeFileMenu = () => dispatch(setIsFileMenu(false));
 
@@ -30,39 +35,10 @@ const FileMenu = ({ anchorEl, chatId }) => {
   const selectVideo = () => videoRef.current?.click();
   const selectAudio = () => audioRef.current?.click();
   const selectFile = () => fileRef.current?.click();
-
-  // const fileChangeHandler = async (e, key) => {
-  //   const files = Array.from(e.target.files);
-
-  //   if (files.length === 0) return;
-  //   if (files.length > 10)
-  //     return toast.error(`You can upload a maximum of 10 ${key} at a time.`);
-  //   console.log(files);
-
-  //   dispatch(setUploadingLoader(true));
-
-  //   const toastId = toast.loading(`Uploading ${files.length} ${key}...`);
-  //   closeFileMenu();
-  //   try {
-  //     //fetching here
-  //     const myForm = new FormData();
-
-  //     myForm.append("chatId", chatId);
-
-  //     files.forEach((file) => myForm.append("files", file));
-
-  //     const res = await sendAttachments(myForm);
-
-  //     if (res.data)
-  //       toast.success(`${key} uploaded successfully`, { id: toastId });
-  //     else toast.error(`Failed to upload ${key}`, { id: toastId });
-  //   } catch (error) {
-  //     toast.error(error, { id: toastId });
-  //     console.log(error);
-  //   } finally {
-  //     dispatch(setUploadingLoader(false));
-  //   }
-  // };
+  const openDrawingCanvas = () => {
+    setIsDrawingCanvasOpen(true);
+    closeFileMenu();
+  };
 
   const fileChangeHandler = async (e, key) => {
     const files = Array.from(e.target.files);
@@ -100,85 +76,89 @@ const FileMenu = ({ anchorEl, chatId }) => {
   };
 
   return (
-    <Menu anchorEl={anchorEl} open={isFileMenu} onClose={closeFileMenu}>
-      <div
-        style={{
-          width: "10rem",
-        }}
-      >
-        {/* Image */}
-        <MenuList>
-          <MenuItem onClick={selectImage}>
-            <Tooltip title="Image">
-              <ImageIcon />
-            </Tooltip>
-            <ListItemText style={{ marginLeft: "1rem" }}>Image</ListItemText>
-            <input
-              type="file"
-              multiple
-              accept="image/png, image/jpeg, image/jpg, image/gif"
-              style={{ display: "none" }}
-              onChange={(e) => fileChangeHandler(e, "Images")}
-              ref={imageRef}
-            />
-          </MenuItem>
+    <>
+      <Menu anchorEl={anchorEl} open={isFileMenu} onClose={closeFileMenu}>
+        <div
+          style={{
+            width: "10rem",
+          }}
+        >
+          <MenuList>
+            <MenuItem onClick={selectImage}>
+              <Tooltip title="Image">
+                <ImageIcon />
+              </Tooltip>
+              <ListItemText style={{ marginLeft: "1rem" }}>Image</ListItemText>
+              <input
+                type="file"
+                multiple
+                accept="image/png, image/jpeg, image/jpg, image/gif"
+                style={{ display: "none" }}
+                onChange={(e) => fileChangeHandler(e, "Images")}
+                ref={imageRef}
+              />
+            </MenuItem>
 
-          {/* Audio */}
-          <MenuItem onClick={selectAudio}>
-            <Tooltip title="Audio">
-              <AudioFileIcon />
-            </Tooltip>
-            <ListItemText style={{ marginLeft: "1rem" }}>Audio</ListItemText>
-            <input
-              type="file"
-              multiple
-              accept="audio/mpeg, audio/wav, audio/ogg"
-              style={{ display: "none" }}
-              onChange={(e) => fileChangeHandler(e, "Audios")}
-              ref={audioRef}
-            />
-          </MenuItem>
-          {/* Video */}
-          <MenuItem onClick={selectVideo}>
-            <Tooltip title="Video">
-              <VideoFileIcon />
-            </Tooltip>
-            <ListItemText style={{ marginLeft: "1rem" }}>Video</ListItemText>
-            <input
-              type="file"
-              multiple
-              accept="video/mp4, video/ogg, video/webm"
-              style={{ display: "none" }}
-              onChange={(e) => fileChangeHandler(e, "Videos")}
-              ref={videoRef}
-            />
-          </MenuItem>
-          {/* File */}
-          <MenuItem onClick={selectFile}>
-            <Tooltip title="File">
-              <UploadFileIcon />
-            </Tooltip>
-            <ListItemText style={{ marginLeft: "1rem" }}>File</ListItemText>
-            <input
-              type="file"
-              multiple
-              accept="*/*"
-              style={{ display: "none" }}
-              onChange={(e) => fileChangeHandler(e, "Files")}
-              ref={fileRef}
-            />
-          </MenuItem>
+            <MenuItem onClick={selectAudio}>
+              <Tooltip title="Audio">
+                <AudioFileIcon />
+              </Tooltip>
+              <ListItemText style={{ marginLeft: "1rem" }}>Audio</ListItemText>
+              <input
+                type="file"
+                multiple
+                accept="audio/mpeg, audio/wav, audio/ogg"
+                style={{ display: "none" }}
+                onChange={(e) => fileChangeHandler(e, "Audios")}
+                ref={audioRef}
+              />
+            </MenuItem>
+            <MenuItem onClick={selectVideo}>
+              <Tooltip title="Video">
+                <VideoFileIcon />
+              </Tooltip>
+              <ListItemText style={{ marginLeft: "1rem" }}>Video</ListItemText>
+              <input
+                type="file"
+                multiple
+                accept="video/mp4, video/ogg, video/webm"
+                style={{ display: "none" }}
+                onChange={(e) => fileChangeHandler(e, "Videos")}
+                ref={videoRef}
+              />
+            </MenuItem>
+            <MenuItem onClick={selectFile}>
+              <Tooltip title="File">
+                <UploadFileIcon />
+              </Tooltip>
+              <ListItemText style={{ marginLeft: "1rem" }}>File</ListItemText>
+              <input
+                type="file"
+                multiple
+                accept="*/*"
+                style={{ display: "none" }}
+                onChange={(e) => fileChangeHandler(e, "Files")}
+                ref={fileRef}
+              />
+            </MenuItem>
 
-          {/* Canvas */}
-          <MenuItem>
-            <Tooltip title="Canvas">
-              <ColorLensIcon />
-            </Tooltip>
-            <ListItemText style={{ marginLeft: "1rem" }}>Canvas</ListItemText>
-          </MenuItem>
-        </MenuList>
-      </div>
-    </Menu>
+            <MenuItem onClick={openDrawingCanvas}>
+              <Tooltip title="Canvas">
+                <ColorLensIcon />
+              </Tooltip>
+              <ListItemText style={{ marginLeft: "1rem" }}>Canvas</ListItemText>
+            </MenuItem>
+          </MenuList>
+        </div>
+      </Menu>
+
+      <DrawingCanvas 
+        open={isDrawingCanvasOpen}
+        onClose={() => setIsDrawingCanvasOpen(false)}
+        chatId={chatId}
+        members={chatDetails?.data?.chat?.members || []}
+      />
+    </>
   );
 };
 

@@ -16,6 +16,7 @@ import {
   ONLINE_USERS,
   START_TYPING,
   STOP_TYPING,
+  NEW_DRAWING,
 } from "./constants/event.js";
 import { getSockets } from "./lib/helper.js";
 import { Message } from "./models/message.js";
@@ -118,6 +119,64 @@ io.on("connection", (socket) => {
       throw new Error(err);
     }
   });
+
+  socket.on(NEW_DRAWING, async ({ chatId, members, drawing }) => {
+    try {
+      // Upload drawing to Cloudinary
+      const uploadResult = await cloudinary.uploader.upload(drawing, {
+        resource_type: 'auto',
+        public_id: `drawing_${uuid()}`,
+      });
+
+      if (!uploadResult || !uploadResult.public_id || !uploadResult.secure_url) {
+        console.error('Cloudinary upload failed:', uploadResult);
+        // Optionally emit an error back to the client
+        socket.emit('upload_error', { message: 'Failed to upload drawing.' });
+        return;
+      }
+
+      const attachments = [{
+        public_id: uploadResult.public_id,
+        url: uploadResult.secure_url,
+      }];
+
+      const messageForRealTime = {
+        content: "Drawing",
+        _id: uuid(),
+        sender: {
+          _id: user._id,
+          name: user.name,
+        },
+        chat: chatId,
+        createdAt: new Date().toISOString(),
+        attachments: attachments
+      };
+
+      const messageForDB = {
+        content: "Drawing",
+        sender: user._id,
+        chat: chatId,
+        attachments: attachments
+      };
+
+      const membersSocket = getSockets(members);
+      io.to(membersSocket).emit(NEW_MESSAGE, {
+        chatId,
+        message: messageForRealTime,
+      });
+      io.to(membersSocket).emit(NEW_MESSAGE_ALERT, { chatId });
+
+      await Message.create(messageForDB);
+
+    } catch (err) {
+      console.error("Error handling NEW_DRAWING event:", err);
+      // Optionally emit an error back to the client
+      socket.emit('server_error', { message: 'An error occurred while processing your drawing.' });
+      // Depending on error handling strategy, you might still want to throw or just log
+      // throw new Error(err);
+    }
+  });
+
   socket.on(START_TYPING, ({ members, chatId }) => {
     const membersSockets = getSockets(members);
     socket.to(membersSockets).emit(START_TYPING, { chatId });

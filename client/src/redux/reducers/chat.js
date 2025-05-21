@@ -4,6 +4,8 @@ import { NEW_MESSAGE_ALERT } from "../../constants/event";
 
 const initialState = {
   notificationCount: 0,
+  messages: [],
+  selectedChat: null,
   newMessagesAlert: getOrSaveFromStorage({
     key: NEW_MESSAGE_ALERT,
     get: true,
@@ -46,6 +48,18 @@ const chatSlice = createSlice({
         (item) => item.chatId !== action.payload
       );
     },
+
+    setMessages: (state, action) => {
+      state.messages = action.payload;
+    },
+
+    addMessage: (state, action) => {
+      state.messages.push(action.payload);
+    },
+
+    setSelectedChat: (state, action) => {
+      state.selectedChat = action.payload;
+    },
   },
 });
 
@@ -55,4 +69,7 @@ export const {
   resetNotificationCount,
   setNewMessagesAlert,
   removeNewMessagesAlert,
+  setMessages,
+  addMessage,
+  setSelectedChat,
 } = chatSlice.actions;

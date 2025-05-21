@@ -33,6 +33,7 @@ const CHAT_JOINED = "CHAT_JOINED";
 const CHAT_LEAVED = "CHAT_LEAVED";
 
 const ONLINE_USERS = "ONLINE_USERS";
+const NEW_DRAWING = "NEW_DRAWING";
 
 export {
   ALERT,
@@ -46,4 +47,5 @@ export {
   CHAT_JOINED,
   CHAT_LEAVED,
   ONLINE_USERS,
+  NEW_DRAWING,
 };
