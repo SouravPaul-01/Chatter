@@ -64,9 +64,9 @@ const io = new Server(server, {
 app.set("io", io);
 
 // Middleware
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors(corsOptions));
 
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/chat", chatRoute);
@@ -124,21 +124,27 @@ io.on("connection", (socket) => {
     try {
       // Upload drawing to Cloudinary
       const uploadResult = await cloudinary.uploader.upload(drawing, {
-        resource_type: 'auto',
+        resource_type: "auto",
         public_id: `drawing_${uuid()}`,
       });
 
-      if (!uploadResult || !uploadResult.public_id || !uploadResult.secure_url) {
-        console.error('Cloudinary upload failed:', uploadResult);
+      if (
+        !uploadResult ||
+        !uploadResult.public_id ||
+        !uploadResult.secure_url
+      ) {
+        console.error("Cloudinary upload failed:", uploadResult);
         // Optionally emit an error back to the client
-        socket.emit('upload_error', { message: 'Failed to upload drawing.' });
+        socket.emit("upload_error", { message: "Failed to upload drawing." });
         return;
       }
 
-      const attachments = [{
-        public_id: uploadResult.public_id,
-        url: uploadResult.secure_url,
-      }];
+      const attachments = [
+        {
+          public_id: uploadResult.public_id,
+          url: uploadResult.secure_url,
+        },
+      ];
 
       const messageForRealTime = {
         content: "Drawing",
@@ -149,14 +155,14 @@ io.on("connection", (socket) => {
         },
         chat: chatId,
         createdAt: new Date().toISOString(),
-        attachments: attachments
+        attachments: attachments,
       };
 
       const messageForDB = {
         content: "Drawing",
         sender: user._id,
         chat: chatId,
-        attachments: attachments
+        attachments: attachments,
       };
 
       const membersSocket = getSockets(members);
@@ -167,11 +173,12 @@ io.on("connection", (socket) => {
       io.to(membersSocket).emit(NEW_MESSAGE_ALERT, { chatId });
 
       await Message.create(messageForDB);
-
     } catch (err) {
       console.error("Error handling NEW_DRAWING event:", err);
       // Optionally emit an error back to the client
-      socket.emit('server_error', { message: 'An error occurred while processing your drawing.' });
+      socket.emit("server_error", {
+        message: "An error occurred while processing your drawing.",
+      });
       // Depending on error handling strategy, you might still want to throw or just log
       // throw new Error(err);
     }
@@ -201,7 +208,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     userSocketIDs.delete(user._id.toString());
     onlineUsers.delete(user._id.toString());
-    socket.broadcast.emit(ONLINE_USERS,Array.from(onlineUsers));
+    socket.broadcast.emit(ONLINE_USERS, Array.from(onlineUsers));
   });
 });
 
